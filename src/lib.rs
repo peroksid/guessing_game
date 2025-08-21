@@ -46,13 +46,11 @@ mod guess_attempts {
                 io::stdin()
                     .read_line(&mut input)
                     .expect("Failed to read line");
-                match input.trim().parse() {
-                    Ok(num) => break num,
-                    Err(_) => {
-                        println!("Invalid input. Please enter a valid number.");
-                        input.clear();
-                    }
+                if let Ok(num) = input.trim().parse() {
+                    break num;
                 }
+                println!("Invalid input. Please enter a valid number.");
+                input.clear();
             }
         }
     }
