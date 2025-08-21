@@ -1,12 +1,4 @@
-use guessing_game::{
-    Greeting,
-    Secret,
-    GuessAttempt,
-    Hint,
-    Attempts,
-    Farewell,
-    GuessingGame,
-};
+use guessing_game::{Attempts, Farewell, Greeting, GuessAttempt, GuessingGame, Hint, Secret};
 
 fn main() {
     let mut guessing_game = GuessingGame::new(
@@ -15,7 +7,7 @@ fn main() {
         Attempts::new(
             5,
             GuessAttempt::new(String::from("Please enter your guess: ")),
-            Hint::new(String::from("Here's a hint: "))
+            Hint::new(String::from("Here's a hint: ")),
         ),
         Farewell::new(String::from("Thanks for playing!")),
     );

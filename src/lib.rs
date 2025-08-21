@@ -1,6 +1,3 @@
-
-
-
 mod secrets {
     use rand::Rng;
     pub struct Secret {
@@ -37,7 +34,7 @@ mod guess_attempts {
     pub struct GuessAttempt {
         message: String,
     }
-    impl  GuessAttempt {
+    impl GuessAttempt {
         pub fn new(message: String) -> Self {
             GuessAttempt { message }
         }
@@ -46,7 +43,9 @@ mod guess_attempts {
             println!("{}", self.message);
             let mut input = String::new();
             loop {
-                io::stdin().read_line(&mut input).expect("Failed to read line");
+                io::stdin()
+                    .read_line(&mut input)
+                    .expect("Failed to read line");
                 match input.trim().parse() {
                     Ok(num) => break num,
                     Err(_) => {
@@ -63,7 +62,7 @@ mod hints {
     use super::secrets::Secret;
     pub struct Hint {
         message: String,
-    } 
+    }
     impl Hint {
         pub fn new(message: String) -> Self {
             Hint { message }
@@ -88,7 +87,7 @@ mod attempts {
         pub count: u32,
         guess_attempt: GuessAttempt,
         pub final_success: bool,
-        hint:Hint,
+        hint: Hint,
     }
     impl Attempts {
         pub fn new(count_limit: u32, guess_attempt: GuessAttempt, hint: Hint) -> Self {
@@ -108,10 +107,12 @@ mod attempts {
                 if secret.is_correct(guess) {
                     self.final_success = true;
                     break;
-                } else {
-                    self.hint.provide(secret, guess);
-                    println!("Incorrect guess. You have {} attempts left.", self.count_limit - self.count);
                 }
+                self.hint.provide(secret, guess);
+                println!(
+                    "Incorrect guess. You have {} attempts left.",
+                    self.count_limit - self.count
+                );
             }
         }
     }
@@ -120,7 +121,7 @@ mod attempts {
 mod farewells {
     use super::attempts::Attempts;
     use super::secrets::Secret;
-    pub struct Farewell{
+    pub struct Farewell {
         message: String,
     }
     impl Farewell {
@@ -129,7 +130,10 @@ mod farewells {
         }
         pub fn execute(&self, attempts: &Attempts, secret: &Secret) {
             if attempts.final_success {
-                println!("{} You guessed the number in {} attempts.", self.message, attempts.count);
+                println!(
+                    "{} You guessed the number in {} attempts.",
+                    self.message, attempts.count
+                );
             } else {
                 println!("The number was {}.", secret.number);
             }
@@ -139,10 +143,10 @@ mod farewells {
 }
 
 mod guessing_game {
-    use super::greetings::Greeting;
-    use super::secrets::Secret;
     use super::attempts::Attempts;
     use super::farewells::Farewell;
+    use super::greetings::Greeting;
+    use super::secrets::Secret;
 
     pub struct GuessingGame {
         greeting: Greeting,
@@ -152,7 +156,12 @@ mod guessing_game {
     }
 
     impl GuessingGame {
-        pub fn new(greeting: Greeting, secret: Secret, attempts: Attempts, farewell: Farewell) -> Self {
+        pub fn new(
+            greeting: Greeting,
+            secret: Secret,
+            attempts: Attempts,
+            farewell: Farewell,
+        ) -> Self {
             GuessingGame {
                 greeting,
                 secret,
@@ -169,10 +178,10 @@ mod guessing_game {
     }
 }
 
-pub use guessing_game::GuessingGame;
-pub use greetings::Greeting;
-pub use secrets::Secret;
-pub use guess_attempts::GuessAttempt;
-pub use hints::Hint;
 pub use attempts::Attempts;
 pub use farewells::Farewell;
+pub use greetings::Greeting;
+pub use guess_attempts::GuessAttempt;
+pub use guessing_game::GuessingGame;
+pub use hints::Hint;
+pub use secrets::Secret;
