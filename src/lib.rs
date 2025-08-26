@@ -5,10 +5,12 @@ mod secrets {
     }
 
     impl Secret {
+        #[must_use]
         pub fn new(range: std::ops::RangeInclusive<u32>) -> Self {
             let number = rand::rng().random_range(range);
             Secret { number }
         }
+        #[must_use]
         pub fn is_correct(&self, guess: u32) -> bool {
             self.number == guess
         }
@@ -20,6 +22,7 @@ mod greetings {
         message: String,
     }
     impl Greeting {
+        #[must_use]
         pub fn new(message: String) -> Self {
             Greeting { message }
         }
@@ -35,10 +38,16 @@ mod guess_attempts {
         message: String,
     }
     impl GuessAttempt {
+        #[must_use]
         pub fn new(message: String) -> Self {
             GuessAttempt { message }
         }
 
+        /// Make the user to guess a number.
+        /// # Panics
+        /// If the function encounters I/O error which prevents from
+        /// reading the line it panics.
+        #[must_use]
         pub fn make(&self) -> u32 {
             println!("{}", self.message);
             let mut input = String::new();
@@ -62,15 +71,20 @@ mod hints {
         message: String,
     }
     impl Hint {
+        #[must_use]
         pub fn new(message: String) -> Self {
             Hint { message }
         }
 
         pub fn provide(&self, secret: &Secret, guess: u32) {
-            if guess < secret.number {
-                println!("{}: The number is higher than {}.", self.message, guess);
-            } else if guess > secret.number {
-                println!("{}: The number is lower than {}.", self.message, guess);
+            match guess.cmp(&secret.number) {
+                std::cmp::Ordering::Equal => (),
+                std::cmp::Ordering::Less => {
+                    println!("{}: The number is higher than {}.", self.message, guess);
+                }
+                std::cmp::Ordering::Greater => {
+                    println!("{}: The number is lower than {}.", self.message, guess);
+                }
             }
         }
     }
@@ -88,6 +102,7 @@ mod attempts {
         hint: Hint,
     }
     impl Attempts {
+        #[must_use]
         pub fn new(count_limit: u32, guess_attempt: GuessAttempt, hint: Hint) -> Self {
             Attempts {
                 count_limit,
@@ -123,6 +138,7 @@ mod farewells {
         message: String,
     }
     impl Farewell {
+        #[must_use]
         pub fn new(message: String) -> Self {
             Farewell { message }
         }
@@ -154,6 +170,7 @@ mod guessing_game {
     }
 
     impl GuessingGame {
+        #[must_use]
         pub fn new(
             greeting: Greeting,
             secret: Secret,
